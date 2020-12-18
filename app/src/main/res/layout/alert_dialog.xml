@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp"
+    android:id="@+id/blog_preview_main_layout"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <ScrollView
+        android:id="@+id/preview_blog_SV"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="600dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/blog_preview_image_IV"
+                android:layout_width="match_parent"
+                android:adjustViewBounds="true"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:src="@drawable/blog_sample_1"/>
+
+            <TextView
+                android:id="@+id/blog_preview_title_TV"
+                android:padding="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="A comprehensive list of the Medium top writer tags that can be displayed "
+                style="@style/TextAppearance.AppCompat.Title"/>
+
+            <TextView
+                android:id="@+id/blog_preview_datetime_TV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nov 24, 2020 . 6 min read"
+                android:textSize="13sp"
+                android:padding="5dp"/>
+
+            <TextView
+                android:id="@+id/blog_preview_content_TV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="I've tried to make a workaround this bug, for that I used the example posted at google groups page I attached. I found as a solution to set css overflow property to. On Desktop browser that would force scrolling bars too appear, but in android that won't happend, so maybe trying to set overflow to scroll only on android devices could be a solution. If this helps, please tell me and I'll edit my answer to meet my fi I've tried to make a workaround this bug, for that I used the example posted at google groups page I attached. I found as a solution to set css overflow property to . On Desktop browser that would force scrolling bars too appear, but in android that won't happend, so maybe trying to set overflow to scroll only on android devices could be a solution. If this helps, please tell me and I'll edit my answer to meet my fi This list contains 73 tags. These are only tags that I have found, so please message me or comment below if there are other"
+                android:textSize="16sp"
+                android:textColor="@android:color/darker_gray"
+                android:fontFamily="sans-serif"/>
+            
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/blog_preview_chipgroup_CG"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/blog_preview_chip_1_CC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Machine"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/blog_preview_chip_2_CC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Machine"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/blog_preview_chip_3_CC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Machine"/>
+
+            </com.google.android.material.chip.ChipGroup>
+
+
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+
+
+
+</LinearLayout>

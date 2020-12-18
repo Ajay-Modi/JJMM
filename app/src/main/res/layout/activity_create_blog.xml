@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".createblog.CreateBlog">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/cancel_button"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:foregroundGravity="center_vertical"
+                android:src="@drawable/ic_baseline_clear_24" />
+
+            <TextView
+                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:gravity="center_vertical"
+                android:text="@string/create_blog" />
+
+            <ImageView
+                android:id="@+id/next_button"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="190dp"
+                android:foregroundGravity="center_vertical"
+                android:src="@drawable/ic_baseline_check_24" />
+        </LinearLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <ImageView
+        android:id="@+id/create_blog_image"
+        android:layout_width="match_parent"
+        android:padding="5dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:adjustViewBounds="true"
+        android:background="@drawable/create_blog_image"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.032">
+
+    </ImageView>
+
+<!--    <com.google.android.material.textfield.TextInputLayout-->
+<!--        android:id="@+id/create_blog_title"-->
+<!--        android:layout_width="match_parent"-->
+<!--        app:errorEnabled="true"-->
+<!--        android:layout_height="wrap_content">-->
+<!--        <com.google.android.material.textfield.TextInputEditText-->
+<!--            android:hint="Title"-->
+<!--            android:inputType="text"-->
+<!--            android:maxLines="2"-->
+<!--            android:textSize="21sp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:scrollbars="vertical"-->
+<!--            android:fontFamily="sans-serif"-->
+<!--            android:scrollHorizontally="false"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:background="@color/white"-->
+<!--            android:layout_height="wrap_content"/>-->
+<!--    </com.google.android.material.textfield.TextInputLayout>-->
+
+
+
+
+<!--    <com.google.android.material.textfield.TextInputLayout-->
+<!--        android:id="@+id/create_blog_content"-->
+<!--        android:layout_width="match_parent"-->
+<!--        app:errorEnabled="true"-->
+<!--        android:layout_height="wrap_content">-->
+<!--        <com.google.android.material.textfield.TextInputEditText-->
+<!--            android:hint="Content"-->
+<!--            android:inputType="textLongMessage|textMultiLine"-->
+<!--            android:layout_width="match_parent"-->
+
+<!--            android:textSize="19sp"-->
+<!--            android:gravity="bottom"-->
+<!--            android:scrollbars="vertical"-->
+<!--            android:scrollHorizontally="false"-->
+<!--            android:fontFamily="sans-serif"-->
+<!--            android:background="@color/white"-->
+<!--            android:layout_height="wrap_content"/>-->
+<!--    </com.google.android.material.textfield.TextInputLayout>-->
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textSize="16sp"/>
+        <TextView
+            android:id="@+id/title_add_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="232dp"
+            android:text="ADD"
+            android:textSize="16sp"
+            android:padding="10dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Content"
+            android:textSize="16sp"/>
+        <TextView
+            android:id="@+id/content_add_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="207dp"
+            android:text="ADD"
+            android:textSize="16sp"
+            android:padding="10dp"/>
+
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/add_tags_B_create_blog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Tags"
+        android:elevation="3dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="@android:color/darker_gray"
+       android:backgroundTint="@color/white"
+        android:textColor="@android:color/darker_gray"
+        android:textAllCaps="false"
+        android:gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:padding="5dp" />
+
+    <com.hootsuite.nachos.NachoTextView
+        android:id="@+id/tags_NTV_create_blog"
+        android:layout_width="match_parent"
+        android:layout_margin="10dp"
+        android:padding="10dp"
+        android:layout_height="wrap_content"
+        android:maxHeight="140dp"
+        app:chipHeight="30dp"
+        android:visibility="invisible"
+        android:maxLines="1"
+        android:hint="you can add atmost 3 tags!"
+        app:chipTextColor="@color/chip_default_text_color"
+        app:chipVerticalSpacing="3dp"
+        app:chipSpacing="3dp"
+        app:chipBackground="@color/chip_material_background" />
+
+
+
+</LinearLayout>

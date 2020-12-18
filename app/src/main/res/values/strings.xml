@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">B L O G</string>
+    <string name="blog_Content">\"hey there\"</string>
+    <string name="open">open</string>
+    <string name="close">close</string>
+    <string name="blog_feed_actionbar_name">Home</string>
+    <string name="create_blog">Create Blog</string>
+    <string name="publish_string">Ready to publish ?</string>
+    <string name="not_yet_string">Not yet</string>
+    <string name="publish_option">Publish</string>
+    <string name="Add_tag">Add Tags</string>
+    <string name="Add_title">Add Title</string>
+    <string name="Add_Content">Add Content</string>
+    <string name="content_added">Content added !</string>
+    <string name="word_limit">Word limit exceeded</string>
+    <string name="add_title">Add Title</string>
+    <string name="tags_limit">more than 3 tags added</string>
+    <string name="upload_blog_image">Upload image!</string>
+
+</resources>
