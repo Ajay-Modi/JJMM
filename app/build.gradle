@@ -45,6 +45,9 @@ dependencies {
     //library to convert a input text into chips
     implementation "com.hootsuite.android:nachos:1.1.1"
 
+    //swipe to refresh feed
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+
 }
 repositories {
     mavenCentral()

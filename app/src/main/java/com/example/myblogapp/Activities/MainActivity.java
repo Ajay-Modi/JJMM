@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
                         user.setFull_name(jsonUser.getString("full_name"));
                         user.setPhone_contact(jsonUser.getString("phone_number"));
                         user.setProfile_image_address(jsonUser.getString("image"));
-
+                        user.setPassword(jsonUser.getString("pass_word"));
                         //storing the user in shared preference
                         SharedPrefmanager.getInstance(MainActivity.this).userLogin(user);
 

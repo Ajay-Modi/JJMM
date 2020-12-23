@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -38,6 +39,8 @@ public class BlogFeed extends AppCompatActivity implements NavigationView.OnNavi
     private DrawerLayout mdrawerlayout;
     private ActionBarDrawerToggle mtoggle;
     private NavigationView navigationView;
+    private SwipeRefreshLayout swipeButton;
+
 
     //action bar header
     private View header;
@@ -72,6 +75,8 @@ public class BlogFeed extends AppCompatActivity implements NavigationView.OnNavi
         getSupportActionBar().setTitle(R.string.blog_feed_actionbar_name);
 
         mdrawerlayout = (DrawerLayout) findViewById(R.id.activity_blog_feed);
+        swipeButton = (SwipeRefreshLayout) findViewById(R.id.swipe_button_blog_feed);
+
         mtoggle = new ActionBarDrawerToggle(BlogFeed.this,mdrawerlayout,R.string.open,R.string.close);
         mdrawerlayout.addDrawerListener(mtoggle);
         mtoggle.syncState();
@@ -127,6 +132,22 @@ public class BlogFeed extends AppCompatActivity implements NavigationView.OnNavi
         // set this adapter on RecyclerView
         myrecyclerView.setAdapter(adapter);
 
+        //implement functionality of swipe to refresh button
+        swipeButton.setColorSchemeColors(getColor(R.color.colorAccent));
+
+        swipeButton.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new_blogs();
+                swipeButton.setRefreshing(false);
+            }
+        });
+
+
+    }
+
+    private void new_blogs() {
+        Toast.makeText(BlogFeed.this,"Feed Refreshed",Toast.LENGTH_SHORT).show();
     }
 
     private void retrieveBase64(String image_address, final ImageView view) {

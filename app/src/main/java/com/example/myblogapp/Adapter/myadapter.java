@@ -104,4 +104,10 @@ public class myadapter extends RecyclerView.Adapter<myadapter.ViewHolder>{
 
         }
     }
+
+    //clear all elements of the recyclerview
+    public void clear() {
+        mydataset.clear();
+
+    }
 }

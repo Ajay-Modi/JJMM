@@ -264,6 +264,7 @@ public class Create_Account extends AppCompatActivity {
                                 user.setUsername(userDB.getString("user_name"));
                                 user.setGender(userDB.getInt("gender"));
                                 user.setProfile_image_address(userDB.getString("image"));
+                                user.setPassword(userDB.getString("pass_word"));
 
                                 SharedPrefmanager.getInstance(Create_Account.this).userLogin(user);
                                 startActivity(new Intent(Create_Account.this, BlogFeed.class));

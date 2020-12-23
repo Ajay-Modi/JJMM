@@ -25,11 +25,11 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.myblogapp.Activities.BlogFeed;
-import com.example.myblogapp.Activities.Create_Account;
 import com.example.myblogapp.Activities.SharedPrefmanager;
 import com.example.myblogapp.Activities.volleySingleton;
 import com.example.myblogapp.Data.VolleyMultipartRequest;
 import com.example.myblogapp.Model.blog_details;
+import com.example.myblogapp.Model.users_details;
 import com.example.myblogapp.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
@@ -267,19 +267,19 @@ public class CreateBlog extends AppCompatActivity implements View.OnClickListene
                     title_preview.setText(title);
                     content_preview.setText(content);
 
-                    blog_details blog = new blog_details();
+                    final blog_details blog = new blog_details();
                     blog.setTitle(title);
                     blog.setDatetime(datetime_string);
                     blog.setContent(content);
                     blog.setTags(tags_string);
 
-                    uploadBlog(image_bitmap,blog);
 
                     builder.setPositiveButton(R.string.publish_option, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Toast.makeText(CreateBlog.this,"Publish is clicked",Toast.LENGTH_SHORT).show();
                             //todo start a activity for result to take tags from user
+                            uploadBlog(image_bitmap,blog);
                         }
                     })
                             .setNegativeButton(R.string.not_yet_string, new DialogInterface.OnClickListener() {
@@ -304,7 +304,7 @@ public class CreateBlog extends AppCompatActivity implements View.OnClickListene
 
     private String find_datetime(String content) {
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("DD/MM/YYYY");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
         String date = dateFormat.format(calendar.getTime());
         String[] words = content.split(" ");
 
@@ -323,10 +323,8 @@ public class CreateBlog extends AppCompatActivity implements View.OnClickListene
     //upload bitmap and some other info with this
     private void uploadBlog(final Bitmap bitmap, final blog_details blog) {
 
-        final String URL = BaseURL;
-
         //custom volley request
-        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, URL,
+        VolleyMultipartRequest request_upload_blog = new VolleyMultipartRequest(Request.Method.POST, BaseURL,
                 new Response.Listener<NetworkResponse>() {
                     @Override
                     public void onResponse(NetworkResponse response) {
@@ -340,11 +338,11 @@ public class CreateBlog extends AppCompatActivity implements View.OnClickListene
                             String message = jsonObject.getString("message");
 
                             if (status == 1) {
-                                Toast.makeText(CreateBlog.this, "Blog Published", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CreateBlog.this, "Blog Published!", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(CreateBlog.this, BlogFeed.class));
 
                             } else {
-                                Toast.makeText(CreateBlog.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CreateBlog.this, message, Toast.LENGTH_SHORT).show();
 
                             }
                         } catch (JSONException e) {
@@ -365,7 +363,12 @@ public class CreateBlog extends AppCompatActivity implements View.OnClickListene
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
+
+                users_details tm_user = SharedPrefmanager.getInstance(CreateBlog.this).getUser();
+                Log.d("CreateBlog",tm_user.getUsername() + " " + tm_user.getPassword());
                 params.put("TASK","upload_blog");
+                params.put("username",tm_user.getUsername());
+                params.put("password",tm_user.getPassword());
                 params.put("title",blog.getTitle());
                 params.put("datetime",blog.getDatetime());
                 params.put("content",blog.getContent());
@@ -385,7 +388,7 @@ public class CreateBlog extends AppCompatActivity implements View.OnClickListene
             }
         };
 
-        volleySingleton.getInstance(CreateBlog.this).getRequestQueue().add(volleyMultipartRequest);
+        volleySingleton.getInstance(CreateBlog.this).getRequestQueue().add(request_upload_blog);
 
     }
 }

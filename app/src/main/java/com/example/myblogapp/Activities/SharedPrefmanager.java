@@ -68,6 +68,7 @@ public class SharedPrefmanager {
         user.setPhone_contact(sharedPreferences.getString(PHONE_NUMBER,null));
         user.setGender(sharedPreferences.getInt(GENDER,1));
         user.setProfile_image_address(sharedPreferences.getString(PROFILE_IMAGE,null));
+        user.setPassword(sharedPreferences.getString(PASSWORD,null));
 
         return user;
     }

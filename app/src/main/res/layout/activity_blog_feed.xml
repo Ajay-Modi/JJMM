@@ -8,7 +8,6 @@
     android:orientation="vertical"
     tools:context=".Activities.BlogFeed">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,6 +18,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".Activities.BlogFeed">
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_button_blog_feed"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
             <androidx.recyclerview.widget.RecyclerView
                 android:scrollbars="vertical"
                 android:id="@+id/myrecyclerView"
@@ -26,6 +31,8 @@
                 android:layout_height="wrap_content">
 
             </androidx.recyclerview.widget.RecyclerView>
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab"
