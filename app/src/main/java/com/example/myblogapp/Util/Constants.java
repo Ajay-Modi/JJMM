@@ -7,8 +7,8 @@ public class Constants {
 
     // URLs for api call
 
-    // virus IP : 192.168.1.103, chirag IP : 192.168.43.40, ajaymodi ID : 192.168.43.94
-    public static final String IP = "192.168.43.94" ;
+    // virus IP : 192.168.3.156, chirag IP : 192.168.43.40, ajaymodi ID : 192.168.43.94
+    public static final String IP = "192.168.3.156" ;
     public static final String BaseURL = "http://"+ IP + "/phptesting/wservices/registerUser.php";
 
     // Table column

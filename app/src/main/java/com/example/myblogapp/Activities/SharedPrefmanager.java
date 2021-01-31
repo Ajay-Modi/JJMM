@@ -7,7 +7,14 @@ import android.util.Log;
 
 import com.example.myblogapp.Model.users_details;
 
-import static com.example.myblogapp.Util.Constants.*;
+import static com.example.myblogapp.Util.Constants.EMAIL;
+import static com.example.myblogapp.Util.Constants.FULL_NAME;
+import static com.example.myblogapp.Util.Constants.GENDER;
+import static com.example.myblogapp.Util.Constants.KEY_ID;
+import static com.example.myblogapp.Util.Constants.PASSWORD;
+import static com.example.myblogapp.Util.Constants.PHONE_NUMBER;
+import static com.example.myblogapp.Util.Constants.PROFILE_IMAGE;
+import static com.example.myblogapp.Util.Constants.USERNAME;
 
 
 public class SharedPrefmanager {
@@ -79,9 +86,7 @@ public class SharedPrefmanager {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.apply();
-        ctx.startActivity(new Intent(ctx,MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-
-
+        ctx.startActivity(new Intent(ctx,MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
         // write code when user is logout...
     }
 

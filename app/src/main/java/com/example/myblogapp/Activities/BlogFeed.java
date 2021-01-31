@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,19 +21,28 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.example.myblogapp.Adapter.myadapter;
-import com.example.myblogapp.Model.feed_Items;
+import com.example.myblogapp.Model.blog_details;
 import com.example.myblogapp.Model.users_details;
 import com.example.myblogapp.R;
 import com.example.myblogapp.createblog.CreateBlog;
+import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.myblogapp.Util.Constants.BaseURL;
 
 public class BlogFeed extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     //make a private variable to hold reference of hamburger
@@ -40,6 +50,15 @@ public class BlogFeed extends AppCompatActivity implements NavigationView.OnNavi
     private ActionBarDrawerToggle mtoggle;
     private NavigationView navigationView;
     private SwipeRefreshLayout swipeButton;
+    private SpinKitView progressBar;
+    private Boolean fetch_data_or_not = true;
+
+    //load more functionality
+    Boolean isScrolling = false;
+    int currentItems, scrolledItems, totalItems;
+
+    //starting blog_id
+    private int starting_blog_id = 0;
 
 
     //action bar header
@@ -49,19 +68,11 @@ public class BlogFeed extends AppCompatActivity implements NavigationView.OnNavi
 
     //notification bell
 
-
-    // primary data for feed Items like title, name of artist, reading time, main photo of blog
-    private String[] titile = {"your ad creative has a shelf life too.", "Technology is Building our Future", "How to make a Android Application for Blog"};
-    private String[] blog_content = {"The view holder objects are managed by an adapter, which you create by extending RecyclerView.Adapter. The adapter creates view holders as needed. The adapter also binds the view holders to their data",
-            "The views in the list are represented by view holder objects. These objects are instances of a class you define by extending RecyclerView.ViewHolder",
-            " Each view holder is in charge of displaying a single item with a view. For example, if your list shows music collection, each view holder might represent a single album. The RecyclerView creates only as many view holders as are needed to display the on-screen portion of the dynamic content"};
-    private String[] name_artist = {"Jon Snow", "Edward", "Bear Gyrlls"};
-    private String[] reading_time = {"10 min read", "3 min read", "1 min read"};
-    int[] main_images = {R.drawable.blog_sample_1, R.drawable.blog_sample_2, R.drawable.sample_6};
-
-    private List<feed_Items> myDataSet;
+    private List<blog_details> blog_list = new ArrayList<>();
 
     private RecyclerView myrecyclerView;
+
+    private RecyclerView.LayoutManager layoutManager;
 
     private myadapter adapter;
 
@@ -76,6 +87,7 @@ public class BlogFeed extends AppCompatActivity implements NavigationView.OnNavi
 
         mdrawerlayout = (DrawerLayout) findViewById(R.id.activity_blog_feed);
         swipeButton = (SwipeRefreshLayout) findViewById(R.id.swipe_button_blog_feed);
+        progressBar = (SpinKitView) findViewById(R.id.indeterminate_PB_Blog_Feed);
 
         mtoggle = new ActionBarDrawerToggle(BlogFeed.this,mdrawerlayout,R.string.open,R.string.close);
         mdrawerlayout.addDrawerListener(mtoggle);
@@ -111,12 +123,6 @@ public class BlogFeed extends AppCompatActivity implements NavigationView.OnNavi
             }
         });
         // first create dataset which I have to display on the BlogFeed activity
-        myDataSet = new ArrayList<>();
-
-        for (int i = 0; i < 20; i++) {
-            feed_Items temp = new feed_Items(titile[i%3], blog_content[i%3], name_artist[i%3], main_images[i%3], reading_time[i%3]);
-            myDataSet.add(temp);
-        }
 
         // initialize the recyclerView
         myrecyclerView = (RecyclerView) findViewById(R.id.myrecyclerView);
@@ -124,13 +130,43 @@ public class BlogFeed extends AppCompatActivity implements NavigationView.OnNavi
 
         // create a Linear Layout Manager for managing all the things like overriding method in adpater
         myrecyclerView.setHasFixedSize(true);
-        myrecyclerView.setLayoutManager(new LinearLayoutManager(getParent()));
+        layoutManager = new LinearLayoutManager(BlogFeed.this);
+        myrecyclerView.setLayoutManager(layoutManager);
 
         // create object of Adapter class for everything
-        adapter = new myadapter(this,myDataSet);
+        // TODO: 16-01-2021 Completed task --- set dataset to the adapter!
 
         // set this adapter on RecyclerView
+        adapter = new myadapter(BlogFeed.this,blog_list );
+
         myrecyclerView.setAdapter(adapter);
+
+        new_blogs();
+
+        // load more functionality
+        myrecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                    isScrolling = true;
+                }
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                totalItems = layoutManager.getItemCount();
+                currentItems = layoutManager.getChildCount();
+                scrolledItems = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
+                if (isScrolling && totalItems == currentItems + scrolledItems) {
+                    Log.d("RES -- SCROLLING", scrolledItems + " " + currentItems + " = " + totalItems);
+                    isScrolling = false;
+                    new_blogs();
+
+                }
+            }
+        });
 
         //implement functionality of swipe to refresh button
         swipeButton.setColorSchemeColors(getColor(R.color.colorAccent));
@@ -138,17 +174,111 @@ public class BlogFeed extends AppCompatActivity implements NavigationView.OnNavi
         swipeButton.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new_blogs();
+                // TODO: 16-01-2021 in this, we want to fetch recently uploaded blogs!
                 swipeButton.setRefreshing(false);
             }
         });
-
-
     }
 
     private void new_blogs() {
-        Toast.makeText(BlogFeed.this,"Feed Refreshed",Toast.LENGTH_SHORT).show();
+
+        Log.d("RESPONSE", fetch_data_or_not.toString());
+
+        if (fetch_data_or_not == false) {
+            return;
+        }
+
+        progressBar.setVisibility(View.VISIBLE);
+
+        users_details user = SharedPrefmanager.getInstance(BlogFeed.this).getUser();
+
+        Log.d("RESPONSE BLOGFEED", user.getUsername()+ "  " + user.getPassword() + " " + starting_blog_id);
+        Log.d("RESPONSE", blog_list.toString());
+        final String URL = BaseURL + "?TASK=get_blogs&username="+user.getUsername()+"&password="+user.getPassword()+"&starting_blog_id="+starting_blog_id;
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    // if no error in the response
+
+                    if (jsonObject.getInt("success") == 1) {
+
+                        JSONArray jsonArray = jsonObject.getJSONArray("blogs");
+
+                        if (jsonArray.length() == 0) {
+                            progressBar.setVisibility(View.GONE);
+                            fetch_data_or_not = false;
+                            return ;
+                        }
+
+
+                        //getting user from response
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject blogObject = jsonArray.getJSONObject(i);
+                            blog_details blog = new blog_details();
+                            blog.setBlog_id(blogObject.getInt("id"));
+                            blog.setTitle(blogObject.getString("title"));
+                            blog.setDatetime(blogObject.getString("date_readtime"));
+                            blog.setContent(blogObject.getString("content"));
+                            blog.setWritten_by(blogObject.getString("written_by"));
+                            blog.setImage_address(blogObject.getString("image_address"));
+                            blog.setLike_count(blogObject.getInt("like_count"));
+                            blog.setComment_count(blogObject.getInt("comment_count"));
+                            blog.setWriter_username(blogObject.getString("writer_name"));
+                            blog.setWriter_profile_image_address(blogObject.getString("writer_profile_image_address"));
+
+                            if (blogObject.getInt("is_liked") == 0) {
+                                blog.setIs_liked(false);
+                            } else {
+                                blog.setIs_liked(true);
+                            }
+
+                            if (blogObject.getInt("is_bookmarked") == 0) {
+                                blog.setIs_bookmarked(false);
+                            } else {
+                                blog.setIs_bookmarked(true);
+                            }
+
+                            blog_list.add(blog);
+                            adapter.notifyDataSetChanged();
+
+                            Log.d("BLOG", blog.getTitle() + "  " + i+" "+jsonArray.length());
+
+                            if (i == jsonArray.length()-1) {
+                                Log.d("RESPONSE - JSONARRAY", jsonArray.toString());
+                                starting_blog_id = blogObject.getInt("id");
+                                Log.d("BLOG", blog.getTitle() + "  " + blog_list);
+                            }
+                            progressBar.setVisibility(View.GONE);
+                        }
+
+                        //just show these blogs
+                    } else {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(BlogFeed.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    progressBar.setVisibility(View.GONE);
+                    e.printStackTrace();
+                    Toast.makeText(BlogFeed.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        
+        } , new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressBar.setVisibility(View.GONE);
+                error.getStackTrace();
+                Toast.makeText(getApplicationContext(),error.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
+
+        volleySingleton.getInstance(this).getRequestQueue().add(stringRequest);
     }
+
 
     private void retrieveBase64(String image_address, final ImageView view) {
         Log.d("URL :",image_address);

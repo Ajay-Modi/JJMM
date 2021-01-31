@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 // add progressBar here
 
 //                loaderDialog.startLoader();
+                Log.d("RESPONSE", username + "  " + password);
                 userLogin(username, password);
 //                loaderDialog.startLoader();
             }
@@ -157,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         username_login.setError("Incorrect username");
                         password_login.setError("Incorrect password");
+                        Log.d("RESPONSE",jsonObject.getString("message"));
 
                     }
                 } catch (JSONException e) {

@@ -16,5 +16,7 @@
 
     <color name="primaryTextColor">#ffffff</color>
 
-    <color name="secondaryTextColor">#ffffff</color>
+    <color name="secondaryTextColor">#EEEEEE</color>
+    
+    <color name="default_image_color">#D7CFCFCF</color>
 </resources>

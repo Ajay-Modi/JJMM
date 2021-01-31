@@ -51,7 +51,7 @@
     <ImageView
         android:id="@+id/create_blog_image"
         android:layout_width="match_parent"
-        android:padding="5dp"
+        android:layout_margin="2dp"
         android:layout_height="250dp"
         android:layout_gravity="center"
         android:adjustViewBounds="true"
@@ -180,7 +180,8 @@
         android:maxHeight="140dp"
         app:chipHeight="30dp"
         android:visibility="invisible"
-        android:maxLines="1"
+        android:lines="1"
+        android:inputType="text"
         android:hint="you can add atmost 3 tags!"
         app:chipTextColor="@color/chip_default_text_color"
         app:chipVerticalSpacing="3dp"

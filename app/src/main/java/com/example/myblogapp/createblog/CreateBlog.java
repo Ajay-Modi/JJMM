@@ -24,6 +24,7 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.example.myblogapp.Activities.BlogFeed;
 import com.example.myblogapp.Activities.SharedPrefmanager;
 import com.example.myblogapp.Activities.volleySingleton;
@@ -37,13 +38,15 @@ import com.hootsuite.nachos.NachoTextView;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,11 +64,13 @@ public class CreateBlog extends AppCompatActivity implements View.OnClickListene
     private  Toolbar toolbar;
     private ImageView cancel;
     private ImageView next;
+    private List<String> tags;
+
 
     // pay load variables
     private String title="";
     private String content="";
-    private List<String> tags;
+    private ArrayList<String> tags_suggestion;
     private final static int title_code=1;
     private final static int content_code=3;
     private final static int tags_code=4;
@@ -86,10 +91,14 @@ public class CreateBlog extends AppCompatActivity implements View.OnClickListene
 
         setSupportActionBar(toolbar);
 
-        String suggestion[] = {"Technology", "Mathematics", "Android", "AndroidDev", "Mind Peace", "Machines"};
-        ArrayAdapter adapter = new ArrayAdapter(CreateBlog.this,R.layout.support_simple_spinner_dropdown_item,suggestion);
-        tags_ntv.setAdapter(adapter);
+        tags_suggestion = new ArrayList<>();
 
+        get_tags();
+
+        if (tags_suggestion != null) {
+            ArrayAdapter adapter = new ArrayAdapter(CreateBlog.this,R.layout.support_simple_spinner_dropdown_item,tags_suggestion);
+            tags_ntv.setAdapter(adapter);
+        }
 
         cancel = (ImageView) findViewById(R.id.cancel_button);
         next = (ImageView) findViewById(R.id.next_button);
@@ -239,8 +248,8 @@ public class CreateBlog extends AppCompatActivity implements View.OnClickListene
                     String tags_string ;
 
                     if (tags.size()==1) {
-                        chip2.setText(tags.get(0));
-                        chip1.setVisibility(View.INVISIBLE);
+                        chip1.setText(tags.get(0));
+                        chip2.setVisibility(View.INVISIBLE);
                         chip3.setVisibility(View.INVISIBLE);
                         tags_string = tags.get(0);
                     } else if (tags.size()==2) {
@@ -279,6 +288,7 @@ public class CreateBlog extends AppCompatActivity implements View.OnClickListene
                         public void onClick(DialogInterface dialog, int which) {
                             Toast.makeText(CreateBlog.this,"Publish is clicked",Toast.LENGTH_SHORT).show();
                             //todo start a activity for result to take tags from user
+                            dialog.dismiss();
                             uploadBlog(image_bitmap,blog);
                         }
                     })
@@ -303,15 +313,17 @@ public class CreateBlog extends AppCompatActivity implements View.OnClickListene
     }
 
     private String find_datetime(String content) {
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
-        String date = dateFormat.format(calendar.getTime());
+        Date today_date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+        String date = dateFormat.format(today_date);
+
         String[] words = content.split(" ");
-
         // taking reading speed as 200 words/min
-        String read_time = String.valueOf(Math.round(words.length/200.0));
+        int read_time = (int) Math.ceil(words.length/200.0);
 
-        return date + "-" + read_time + "min read";
+        Log.d("CreateBlog",read_time + " " + words.length);
+
+        return date + " . " + read_time + " min read";
     }
 
     public byte[] getFileDataFromDrawable(Bitmap bitmap) {
@@ -321,7 +333,8 @@ public class CreateBlog extends AppCompatActivity implements View.OnClickListene
     }
 
     //upload bitmap and some other info with this
-    private void uploadBlog(final Bitmap bitmap, final blog_details blog) {
+    private Boolean uploadBlog(final Bitmap bitmap, final blog_details blog) {
+        final Boolean[] res = {false};
 
         //custom volley request
         VolleyMultipartRequest request_upload_blog = new VolleyMultipartRequest(Request.Method.POST, BaseURL,
@@ -338,9 +351,9 @@ public class CreateBlog extends AppCompatActivity implements View.OnClickListene
                             String message = jsonObject.getString("message");
 
                             if (status == 1) {
+                                res[0] = true;
                                 Toast.makeText(CreateBlog.this, "Blog Published!", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(CreateBlog.this, BlogFeed.class));
-
                             } else {
                                 Toast.makeText(CreateBlog.this, message, Toast.LENGTH_SHORT).show();
 
@@ -373,6 +386,7 @@ public class CreateBlog extends AppCompatActivity implements View.OnClickListene
                 params.put("datetime",blog.getDatetime());
                 params.put("content",blog.getContent());
                 params.put("tags",blog.getTags());
+                params.put("written_by", tm_user.getUsername());
                 return params;
             }
 
@@ -389,6 +403,55 @@ public class CreateBlog extends AppCompatActivity implements View.OnClickListene
         };
 
         volleySingleton.getInstance(CreateBlog.this).getRequestQueue().add(request_upload_blog);
+
+        return res[0];
+    }
+
+    //fetching tags from database
+    private void get_tags() {
+
+        StringRequest get_tags_request = new StringRequest(BaseURL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    if (jsonObject.getInt("success") == 1) {
+                        JSONArray jsonArray = jsonObject.getJSONArray("tags");
+                        if (jsonArray!=null) {
+                            for ( int i=0; i < jsonArray.length(); i++) {
+                                tags_suggestion.add(jsonArray.getString(i));
+                            }
+                        }
+                    } else {
+                        Log.d("CreateBlog",jsonObject.getString("message"));
+                    }
+                } catch (JSONException e) {
+                    Log.d("CreateBlog",e.getMessage());
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("CreateBlog",error.getMessage());
+                error.printStackTrace();
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                users_details user = SharedPrefmanager.getInstance(CreateBlog.this).getUser();
+                params.put("TASK","get_tags");
+                params.put("username",user.getUsername());
+                params.put("password",user.getPassword());
+                return params;
+            }
+        };
+
+        volleySingleton.getInstance(CreateBlog.this).getRequestQueue().add(get_tags_request);
 
     }
 }

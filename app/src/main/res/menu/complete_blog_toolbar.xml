@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/back_button"
+        android:title="back_button"
+        app:showAsAction="always"
+        android:icon="@drawable/white_back_arrow"></item>
+
+    <item android:id="@+id/three_dot"
+        android:title="setting"
+        app:showAsAction="always"
+        android:icon="@drawable/more_vertical"></item>
+</menu>
